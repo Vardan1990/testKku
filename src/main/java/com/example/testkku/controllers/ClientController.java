@@ -29,6 +29,14 @@ public class ClientController {
     private final ClientServiceImpl clientServiceImpl;
 
 
+    /* пример запроса
+     *{
+        "name": "Sergey",
+        "surname": "Lavrov",
+        "phoneContacts": ["777778888"],
+        "emailContacts": ["lavrov@mail.ru"]
+         }
+     */
     @PostMapping(path = "/createClient", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Client> createClient(@RequestBody ClientDto clientDto) throws ClientException {
         log.info("Client#create by dto {}", clientDto);
@@ -37,6 +45,14 @@ public class ClientController {
         }
         return ResponseEntity.ok(clientServiceImpl.createClientFromDto(clientDto));
     }
+
+     /* пример запроса
+      request param name- clientId
+      {
+       "phone": "22147859",
+       "email": "ivanov@mail.com"
+      }
+     */
 
     @PutMapping(path = "/setNewContact", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> setNewContact(@RequestParam(name = "clientId") Long clientId, @RequestBody ContactDto contactDto) throws ClientException {
@@ -51,6 +67,9 @@ public class ClientController {
         return ResponseEntity.ok(clientServiceImpl.getClientsList());
 
     }
+   /* пример запроса
+      request param name- clientId
+   */
 
     @GetMapping(path = "/getById")
     public ResponseEntity<Client> getClientById(@RequestParam(name = "clientId") Long clientId) throws ClientException {
@@ -58,11 +77,20 @@ public class ClientController {
         return ResponseEntity.ok(clientServiceImpl.findClientById(clientId));
     }
 
+    /* пример запроса
+      request param name- clientId
+   */
+
     @GetMapping(path = "/getContacts")
     public ResponseEntity<ClientDto> getClientContactsById(@RequestParam(name = "clientId") Long clientId) {
         log.info("Client#get contacts by id {}", clientId);
         return ResponseEntity.ok(clientServiceImpl.getClientContactsById(clientId));
     }
+
+    /* пример запроса
+      request param name- clientId
+      request param name- contactType //value - PHONE,EMAIL//
+   */
 
     @GetMapping(path = "/getContactsByTypeAndId")
     public ResponseEntity<List<String>> getContactsByTypeAndId(@RequestParam(name = "contactType") String contactType, @RequestParam(name = "clientId") Long clientId) {
