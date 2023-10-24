@@ -1,7 +1,7 @@
 package com.example.testkku.service;
 
-import com.example.testkku.dto.ClientDto;
-import com.example.testkku.dto.ContactDto;
+import com.example.testkku.dto.ContactsDto;
+import com.example.testkku.dto.CreateClientDto;
 import com.example.testkku.entity.Client;
 import com.example.testkku.exception.ClientException;
 
@@ -9,15 +9,15 @@ import java.util.List;
 
 public interface ClientService {
 
-    Client createClientFromDto(ClientDto clientDto);
+    Client createClientFromDto(CreateClientDto createClientDto);
 
-    void setNewClientContactById(Long clientId, ContactDto contactDto) throws ClientException;
+    void setNewClientContactById(Long clientId, ContactsDto contactsDto) throws ClientException;
 
     List<Client> getClientsList();
 
     Client findClientById(Long clientId) throws ClientException;
 
-    ClientDto getClientContactsById(Long clientId);
+    CreateClientDto getClientContactsById(Long clientId);
 
     List<String> getClientContactsByContactTypeAndById(String contactType, Long clientId);
 

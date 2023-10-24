@@ -1,10 +1,10 @@
 package com.example.testkku.controllers;
 
-import com.example.testkku.dto.ClientDto;
-import com.example.testkku.dto.ContactDto;
+import com.example.testkku.dto.ContactsDto;
+import com.example.testkku.dto.CreateClientDto;
 import com.example.testkku.entity.Client;
 import com.example.testkku.exception.ClientException;
-import com.example.testkku.service.ClientServiceImpl;
+import com.example.testkku.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -26,45 +26,45 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClientController {
 
-    private final ClientServiceImpl clientServiceImpl;
+    private final ClientService clientService;
 
 
     /* пример запроса
      *{
-        "name": "Sergey",
-        "surname": "Lavrov",
-        "phoneContacts": ["777778888"],
-        "emailContacts": ["lavrov@mail.ru"]
+        "name": "",
+        "surname": "",
+        "phoneContacts": [""],
+        "emailContacts": [""]
          }
      */
     @PostMapping(path = "/createClient", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Client> createClient(@RequestBody ClientDto clientDto) throws ClientException {
-        log.info("Client#create by dto {}", clientDto);
-        if (clientDto.getName() == null || clientDto.getSurname() == null) {
+    public ResponseEntity<Client> createClient(@RequestBody CreateClientDto createClientDto) throws ClientException {
+        log.info("Client#create by dto {}", createClientDto);
+        if (createClientDto.getName() == null || createClientDto.getSurname() == null) {
             throw new ClientException("wrong client name or surname");
         }
-        return ResponseEntity.ok(clientServiceImpl.createClientFromDto(clientDto));
+        return ResponseEntity.ok(clientService.createClientFromDto(createClientDto));
     }
 
      /* пример запроса
       request param name- clientId
       {
-       "phone": "22147859",
-       "email": "ivanov@mail.com"
+       "phone": "",
+       "email": ""
       }
      */
 
     @PutMapping(path = "/setNewContact", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> setNewContact(@RequestParam(name = "clientId") Long clientId, @RequestBody ContactDto contactDto) throws ClientException {
-        log.info("Client#set new contact  {}", contactDto);
-        clientServiceImpl.setNewClientContactById(clientId, contactDto);
+    public ResponseEntity<?> setNewContact(@RequestParam(name = "clientId") Long clientId, @RequestBody ContactsDto contactsDto) throws ClientException {
+        log.info("Client#set new contact  {}", contactsDto);
+        clientService.setNewClientContactById(clientId, contactsDto);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping(path = "/getClientList")
     public ResponseEntity<List<Client>> getClientList() {
         log.info("Client#get list");
-        return ResponseEntity.ok(clientServiceImpl.getClientsList());
+        return ResponseEntity.ok(clientService.getClientsList());
 
     }
    /* пример запроса
@@ -74,7 +74,7 @@ public class ClientController {
     @GetMapping(path = "/getById")
     public ResponseEntity<Client> getClientById(@RequestParam(name = "clientId") Long clientId) throws ClientException {
         log.info("Client#get by id  {}", clientId);
-        return ResponseEntity.ok(clientServiceImpl.findClientById(clientId));
+        return ResponseEntity.ok(clientService.findClientById(clientId));
     }
 
     /* пример запроса
@@ -82,9 +82,9 @@ public class ClientController {
    */
 
     @GetMapping(path = "/getContacts")
-    public ResponseEntity<ClientDto> getClientContactsById(@RequestParam(name = "clientId") Long clientId) {
+    public ResponseEntity<CreateClientDto> getClientContactsById(@RequestParam(name = "clientId") Long clientId) {
         log.info("Client#get contacts by id {}", clientId);
-        return ResponseEntity.ok(clientServiceImpl.getClientContactsById(clientId));
+        return ResponseEntity.ok(clientService.getClientContactsById(clientId));
     }
 
     /* пример запроса
@@ -95,6 +95,6 @@ public class ClientController {
     @GetMapping(path = "/getContactsByTypeAndId")
     public ResponseEntity<List<String>> getContactsByTypeAndId(@RequestParam(name = "contactType") String contactType, @RequestParam(name = "clientId") Long clientId) {
         log.info("Client#et contacts bay contactType and by id  {} ,{}", contactType, clientId);
-        return ResponseEntity.ok(clientServiceImpl.getClientContactsByContactTypeAndById(contactType, clientId));
+        return ResponseEntity.ok(clientService.getClientContactsByContactTypeAndById(contactType, clientId));
     }
 }
